@@ -1,42 +1,40 @@
 var express = require('express');
 var app = express();
-
 var path = require('path');
 var bodyParser = require('body-parser');
-
 var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/mongo_peer_challenge');
 var Schema = mongoose.Schema;
-
-mongoose.connect('mongodb://localhost/mongo_lecture');
-mongoose.model('Person', new Schema({"name": String, "location": String}, {collection: 'people'}));
+mongoose.model('Person', new Schema({'name':String, 'spirit_animal':String}, {collection:'people'}));
 var Person = mongoose.model('Person');
-
+//Person.insert Person.find({})
 app.set("port", process.env.PORT || 5000);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({expanded: true}));
+app.route('/data')
+    .get( function (req,res) {
+          var searchy = req.query.peopleSearch;
 
-app.get('/data', function(req,res){
-    //return the people from the database, and send it down to the client
+          if(searchy){
+            Person.find({'name':searchy},function (err,data) {
+              res.send(data);
+            });
+          } else {
+                Person.find({},function (err,data) {
+                  res.send(data);
+              });
+          }
+        })
+    .post(function (req,res) {
+      var peep = new Person({'name':req.body.peopleName, 'spirit_animal': req.body.peopleAnimal});
+      peep.save(function (error) {
+          console.log(error);
+          res.send(peep);
+      });
 
-    var query = req.query.peopleSearch;
-
-    if(query){
-        Person.find({"name" : query}, function(err, data){
-            if(err){
-                console.log("ERROR! : ", err);
-            }
-            res.send(data);
-        });
-    } else {
-        Person.find({}, function(err, data){
-            if(err){
-                console.log("ERROR! : ", err);
-            }
-            res.send(data);
-        });
-    }
+    });
 
 
-
-});
 
 app.get("/*", function(req,res){
     var file = req.params[0] || "/views/index.html";

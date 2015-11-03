@@ -10,10 +10,16 @@
     <script type="text/javascript" src="/assets/scripts/app.js"></script>
 </head>
 <body>
-    <p>What up Zeta?</p>
+  <form id="inputPerson">
+      <input type="text" id="peopleName" name="peopleName" placeholder="Enter name:">
+      <input type="text" id="peopleAnimal" name="peopleAnimal" placeholder="Enter Animal:">
+      <button id="submitNewPerson" class="btn btn-info">Submit</button>
+  </form>
+  <br><br>
     <form id="search">
-        <input type="text" id="peopleSearch" name="peopleSearch" placeholder="Enter name:">
+        <input type="text" id="peopleSearch" name="peopleSearch" placeholder="Enter name:" value="Paige">
         <button id="submitSearch" class="btn btn-info">Submit</button>
     </form>
+    <div id="result"></div>
 </body>
 </html>
